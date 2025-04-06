@@ -1,0 +1,62 @@
+**Etape 1 : noms des disques**  
+
+commande : fdisk -l  
+
+
+**Etape 2 : création des partitions**  
+
+commandes : fdisk /dev/sdb    
+options:    
+n : nouvelle partition  
+p : primaire  
+1 : première partition  
++6G : taille de la partition  
+
+n : nouvelle partition  
+p : primaire  
+2 : deuxième partition  
++4G : taille de la partition  
+
+t : Changement du type de partition  
+2 : deuxième partition  
+82 : code de partition swap  
+
+**Etape 3 et 4 : formatage et nommage des partitions**  
+
+commandes :  
+lsblk -f : affichage des périphériques de stockage avec type de partition  
+mkfs.ext4 -L DATA /dev/sdb1 : formatage partition 1 + nommage  
+mkswap /dev/sdb2 : formatage partition 2  
+mkswap -L SWAP /dev/sdb2 : nommage partition 2  
+lsblk -f : vérification  
+
+**Etape 5 : activation swap partition 2**  
+
+commandes:  
+swapon /dev/sdb2 : activation swap partition 2  
+swapoff /dev/sda5 : désactivation swap partition 5 du disque principal sda)  
+lsblk -f : vérification  
+
+**Etape 6 : création du dossier de montage et montage dans /mnt**  
+
+commandes:  
+mkdir mnt/data  
+mount /dev/sdb1 /mnt/data  
+
+**Etape 7 : Affichage des UUID**
+
+commande:  
+blkid  
+
+**Etape 8 : Montage automatique au démarrage avec UID des disques**
+
+commande :  
+nano /etc/fstab  
+\- édition du fichier fstab et ajout des lignes concernant sdb1 et sdb2  
+mount -a /etc/fstab  
+\- vérification si erreur dans le fichier fstab  
+
+**Etape 9 : Vérification des disques**  
+
+commande :  
+fdisk -l  
